@@ -7,6 +7,7 @@ import { BaseStack } from "../lib/base/base-stack";
 import { ApplicationAdvancedTierStack } from "../lib/environment/application-advanced-tier-stack";
 import { TenantTier } from "../lib/enums/tenant-tier";
 import { DestroyPolicySetter } from "../lib/cdk-aspect/destroy-policy-setter";
+import { MyDashboardStack } from "../lib/monitoring/cw-dashboard";
 
 const app = new cdk.App();
 const account = process.env.CDK_DEFAULT_ACCOUNT;
@@ -14,7 +15,7 @@ const region = process.env.CDK_DEFAULT_REGION;
 const deploymentMode = process.env.CDK_PARAM_DEPLOYMENT_MODE || "all";
 const tlsCertIstio = process.env.CDK_PARAM_TLS_CERT_ISTIO;
 const tlsKeyIstio = process.env.CDK_PARAM_TLS_KEY_ISTIO;
-const workshopSSMPrefix = "/saas-workshop";
+const workshopSSMPrefix = "/workshop";
 
 if (!tlsCertIstio || !tlsKeyIstio) {
   throw new Error(
@@ -80,6 +81,11 @@ const tenantCstack = new ApplicationStack(app, "tenantCstack", {
 });
 tenantCstack.node.addDependency(basicStack);
 
+const cloudwatchDashboard = new MyDashboardStack(app, "workshopDashboard", {
+  namespace: "workshop-metrics",
+  workshopSSMPrefix: workshopSSMPrefix,
+});
+
 // Set destroy policies to all stacks.
 const stacks = [
   baseStack,
@@ -88,6 +94,7 @@ const stacks = [
   tenantBstack,
   tenantCstack,
   tenantEstack,
+  cloudwatchDashboard,
 ];
 stacks.forEach((stack) => {
   cdk.Aspects.of(stack).add(new DestroyPolicySetter());
