@@ -10,6 +10,7 @@ import { CapacityType, KubernetesVersion } from "aws-cdk-lib/aws-eks";
 import { Cloud9Resources } from "../lib/cloud9-resources";
 import { DestroyPolicySetter } from "../lib/cdk-aspect/destroy-policy-setter";
 import { SSMResources } from "../lib/ssm-resources";
+import { SharedStack } from "../lib/shared/infrastructure/shared-stack";
 import { ILogGroup } from "aws-cdk-lib/aws-logs";
 import {
   ResourceProvider,
@@ -102,9 +103,12 @@ if (kubectlRole) {
   );
 }
 
+const sharedStack = new SharedStack(blueprint, "SharedStack");
+
 new SSMResources(blueprint, "SSMResources", {
   clusterInfo: blueprint.getClusterInfo(),
   workshopSSMPrefix: workshopSSMPrefix,
+  sharedImageAsset: sharedStack.sharedImageAsset,
 });
 
 new Cloud9Resources(blueprint, "Cloud9Resources", {

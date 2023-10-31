@@ -68,7 +68,7 @@ export class InvoiceStack extends MicroserviceStack {
           directory: path.join(__dirname, "../app"),
           ...(baseImage && {
             buildArgs: {
-              BASE_IMAGE: baseImage.imageUri,
+              BASE_IMAGE: baseImage,
             },
           }),
         }
