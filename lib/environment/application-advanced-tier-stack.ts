@@ -100,6 +100,7 @@ export class ApplicationAdvancedTierStack extends cdk.Stack {
         cloudwatchAgentLogEndpoint: cloudwatchAgentLogEndpoint,
         cloudwatchAgentLogGroupName: cloudwatchAgentLogGroupName,
         eventBus: advancedTierEventBus,
+        baseImage: props.baseStack.baseImage,
       }
     );
     fulfillmentAdvancedTierStack.node.addDependency(
@@ -134,6 +135,7 @@ export class ApplicationAdvancedTierStack extends cdk.Stack {
       cloudwatchAgentLogEndpoint: cloudwatchAgentLogEndpoint,
       cloudwatchAgentLogGroupName: cloudwatchAgentLogGroupName,
       namespaceConstruct: tenantSpecificAdvancedTierNamespace,
+      baseImage: props.baseStack.baseImage,
       eventBus: advancedTierEventBus,
       fulfillmentEventDetailType: fulfillmentAdvancedTierStack.eventDetailType,
       fulfillmentEventSource: fulfillmentAdvancedTierStack.eventSource,
